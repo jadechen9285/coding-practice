@@ -65,3 +65,32 @@ def is_happy(n):
             break 
 
     return slow == 1
+
+
+def max_volwels(s, k):
+    """Problem 2.4.1 — Maximum Number of Vowels in a Substring of Given Length
+
+    # 1. WINDOW: what running value describes the current block? 
+    # -> it contains the k consecutive letter of the string (k-substring), check the number of the vowels given this substring
+    # 2. SLIDE:  how does that value change when one enters and one leaves? 
+    # -> new letter enters, the leftest one needs to leave
+    # 3. PROVE:  why does the update give the same result as recomputing? 
+    # ->each time we minus the character it leaves (check if it is vowels) and plus the one it enters (check if it is vowels), 
+    # using the sliding windows strategy, it go through all the combos
+    """
+
+    def count_vowels(s):
+        return sum([c in vowels for c in s])
+
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    count = count_vowels(s[:k])
+    best = count
+
+    for i in range(k, len(s)):
+        count = count + count_vowels(s[i]) - count_vowels(s[i-k])
+        best = max(count, best)
+
+        if best == k :
+            return best
+
+    return best 
