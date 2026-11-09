@@ -94,3 +94,38 @@ def max_volwels(s, k):
             return best
 
     return best 
+
+def find_all_anagrams(s, p):
+    """Problem 2.4.2 — Find All Anagrams in a String
+
+    """
+    k = len(p)
+    if k > len(s):
+        return []
+
+    need = {}
+    for c in p:
+        need[c] = need.get(c, 0) + 1
+
+    window = {}
+    for c in s[:k]:                       # first window
+        window[c] = window.get(c, 0) + 1
+
+    res = []
+    if window == need:
+        res.append(0)
+
+    for i in range(k, len(s)):
+        enter = s[i]
+        leave = s[i-k]
+
+        window[enter] = window.get(enter, 0) + 1
+
+        window[leave] -= 1
+        if window[leave] == 0:
+            del window[leave]
+
+        if window == need:
+            res.append(i-k+1)
+
+    return res
