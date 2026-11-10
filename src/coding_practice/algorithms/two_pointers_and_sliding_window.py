@@ -129,3 +129,41 @@ def find_all_anagrams(s, p):
             res.append(i-k+1)
 
     return res
+
+
+def maximum_sum_of_unique_subarray(nums, k):
+    """Problem 2.4.3 — Maximum Sum of Distinct Subarrays With Length K
+    # 1. WINDOW: what running value describes the current block? 
+    # -> it contains the k consecutive number for the list of nums, 
+    # 2. SLIDE:  how does that value change when one enters and one leaves? 
+    # -> new number enters, the leftest one needs to leave, each time check for uniqness 
+    # 3. PROVE:  why does the update give the same result as recomputing? 
+    # -> once we check the initated window, we just need to check the newest enter after getting rid of the one left, 
+    # this way, we remove duplicate work and stay in O(n) of time, further we iterate all possibilities 
+    """
+
+    window = {}
+    best = 0
+
+    for num in nums[:k]:
+        window[num] = window.get(num, 0) + 1
+
+    window_sum = sum(nums[:k])
+
+    if len(window) == k: # unique
+        best = max(best, window_sum)
+
+    for i in range(k, len(nums)):
+        enter = nums[i]
+        leave = nums[i-k]
+        window_sum = window_sum - leave + enter
+        window[enter] = window.get(enter, 0) + 1
+        window[leave] = window.get(leave, 0) - 1
+
+        if window[leave] == 0:
+            del window[leave]
+
+        if len(window) == k:
+            best = max(best, window_sum)
+
+    return best 
